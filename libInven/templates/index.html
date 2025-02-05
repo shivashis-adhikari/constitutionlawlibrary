@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prof. Bipin Adhikari Constitutional Law Library</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="https://em-content.zobj.net/source/apple/391/open-book_1f4d6.png" type="image/x-icon">
+    <script>
+        function showDetails(book) {
+            const details = `
+                <p><strong>Title:</strong> ${book['Title']}</p>
+                <p><strong>Book/PDF/Film:</strong> ${book['Book/PDF/Film']}</p>
+                <p><strong>Author:</strong> ${book['Author']}</p>
+                <p><strong>Genre:</strong> ${book['Genre']}</p>
+                <p><strong>Main Contents:</strong> ${book['Main Contents']}</p>
+                <p><strong>Publisher:</strong> ${book['Publisher']}</p>
+                <p><strong>Year of publication:</strong> ${book['Year of publication']}</p>
+                <p><strong>Country:</strong> ${book['Country']}</p>
+                <p><strong>ISBN:</strong> ${book['ISBN']}</p>
+                <p><strong>Condition:</strong> ${book['Condition']}</p>
+                <p><strong>Read Status:</strong> ${book['Read Status']}</p>
+                <p><strong>Location:</strong> ${book['Location']}</p>
+            `;
+            document.getElementById('book-details').innerHTML = details;
+            document.getElementById('details-dialog').style.display = 'block';
+        }
+
+        function closeDetails() {
+            document.getElementById('details-dialog').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <h1>Prof. Bipin Adhikari Constitutional Law Library</h1>
+    <form method="get" action="/">
+        <input type="text" name="query" placeholder="Search..." value="{{ query }}">
+        <select name="field">
+            <option value="All" {% if field == 'All' %}selected{% endif %}>All</option>
+            <option value="Title" {% if field == 'Title' %}selected{% endif %}>Title</option>
+            <option value="Book/PDF/Film" {% if field == 'Book/PDF/Film' %}selected{% endif %}>Book/PDF/Film</option>
+            <option value="Author" {% if field == 'Author' %}selected{% endif %}>Author</option>
+            <option value="Genre" {% if field == 'Genre' %}selected{% endif %}>Genre</option>
+            <option value="Main Contents" {% if field == 'Main Contents' %}selected{% endif %}>Main Contents</option>
+            <option value="Publisher" {% if field == 'Publisher' %}selected{% endif %}>Publisher</option>
+            <option value="Year of publication" {% if field == 'Year of publication' %}selected{% endif %}>Year of publication</option>
+            <option value="Country" {% if field == 'Country' %}selected{% endif %}>Country</option>
+            <option value="ISBN" {% if field == 'ISBN' %}selected{% endif %}>ISBN</option>
+            <option value="Condition" {% if field == 'Condition' %}selected{% endif %}>Condition</option>
+            <option value="Read Status" {% if field == 'Read Status' %}selected{% endif %}>Read Status</option>
+            <option value="Location" {% if field == 'Location' %}selected{% endif %}>Location</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if books|length == 0 %}
+        <p>No books found</p>
+    {% else %}
+        <ul>
+            {% for book in books %}
+                <li>{{ loop.index }}. {{ book['Title'] }}
+                    <button onclick='showDetails({{ book | tojson }})'>View</button>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div id="details-dialog" style="display:none;">
+        <div id="book-details"></div>
+        <button onclick="closeDetails()">Close</button>
+    </div>
+</body>
+</html>
