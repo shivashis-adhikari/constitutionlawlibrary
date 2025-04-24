@@ -2,7 +2,7 @@ body {
     font-family: "Times New Roman", serif;
     margin: 20px;
     background-color: #FFFF;
-    overflow: hidden;
+    overflow: auto;
 }
 
 h1 {
