@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" class="{% block theme_class %}dark{% endblock %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Prof. Bipin Adhikari Constitutional Law Library{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="https://em-content.zobj.net/source/apple/391/open-book_1f4d6.png" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'serif': ['Source Serif Pro', 'Georgia', 'serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#ffffff',
+                            100: '#f0f0f0',
+                            200: '#cccccc',
+                            300: '#aaaaaa',
+                            400: '#888888',
+                            500: '#555555',
+                            600: '#333333',
+                            700: '#1a1a1a',
+                            800: '#151515',
+                            900: '#0a0a0a',
+                            950: '#000000',
+                        },
+                        accent: {
+                            500: '#555555',
+                            600: '#333333',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.2s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(12px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom styles -->
+    <style>
+        :root {
+            --primary-bg: #000000;
+            --secondary-bg: #0a0a0a;
+            --card-bg: #151515;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --border-color: #333333;
+            --accent-color: #555555;
+        }
+        
+        .professional-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        
+        .professional-card:hover {
+            background: #222222;
+            border-color: #444444;
+        }
+        
+        .minimal-button {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        
+        .minimal-button:hover {
+            background: var(--card-bg);
+            border-color: var(--accent-color);
+        }
+        
+        .accent-button {
+            background: var(--accent-color);
+            border: 1px solid var(--border-color);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .accent-button:hover {
+            background: #666666;
+            border-color: #777777;
+        }
+        
+        .search-input {
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 1px var(--accent-color);
+        }
+        
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            align-items: stretch;
+        }
+        
+        .book-grid > div {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @media (max-width: 768px) {
+            .book-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        /* Remove any flashy animations */
+        * {
+            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+        }
+        
+        /* Professional focus states */
+        *:focus {
+            outline: 1px solid var(--accent-color);
+            outline-offset: 1px;
+        }
+        
+        /* Clean scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--primary-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-black text-white min-h-screen font-sans antialiased">
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-20 bg-black/50 border-t border-neutral-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="text-center">
+                <p class="text-sm text-neutral-400">
+                    © 2025 Prof. Bipin Adhikari Constitutional Law Library. Academic research collection.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        const lightIcon = document.getElementById('light-icon');
+        const darkIcon = document.getElementById('dark-icon');
+        
+        // Default to dark theme
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        htmlElement.classList.toggle('dark', currentTheme === 'dark');
+        
+        function updateIcons(isDark) {
+            if (isDark) {
+                lightIcon.classList.add('hidden');
+                darkIcon.classList.remove('hidden');
+            } else {
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            }
+        }
+        
+        updateIcons(currentTheme === 'dark');
+        
+        themeToggle.addEventListener('click', () => {
+            const isDark = htmlElement.classList.contains('dark');
+            htmlElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            updateIcons(!isDark);
+        });
+
+        // Minimal entrance animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.animate-on-load');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('animate-fade-in');
+                }, index * 50);
+            });
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

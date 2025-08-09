@@ -1,23 +1,228 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ book['Title'] }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>{{ book['Title'] }}</h1>
-    <p><strong>Author:</strong> {{ book['Author'] }}</p>
-    <p><strong>Genre:</strong> {{ book['Genre'] }}</p>
-    <p><strong>Main Contents:</strong> {{ book['Main Contents'] }}</p>
-    <p><strong>Publisher:</strong> {{ book['Publisher'] }}</p>
-    <p><strong>Year of publication:</strong> {{ book['Year of publication'] }}</p>
-    <p><strong>Country:</strong> {{ book['Country'] }}</p>
-    <p><strong>ISBN:</strong> {{ book['ISBN'] }}</p>
-    <p><strong>Condition:</strong> {{ book['Condition'] }}</p>
-    <p><strong>Read Status:</strong> {{ book['Read Status'] }}</p>
-    <p><strong>Location:</strong> {{ book['Location'] }}</p>
-    <a href="{{ url_for('index') }}">Back to list</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}{{ book['Title'] }} - Constitutional Law Library{% endblock %}
+
+{% block content %}
+<section class="px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-6xl mx-auto">
+        <!-- Breadcrumb -->
+        <nav class="mb-8 animate-on-load">
+            <ol class="flex items-center space-x-2 text-sm text-slate-400">
+                <li>
+                    <a href="{{ url_for('index') }}" class="hover:text-accent-500 transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v0H8v0z"></path>
+                        </svg>
+                        Library
+                    </a>
+                </li>
+                <li>
+                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </li>
+                <li class="text-slate-200 font-medium truncate">
+                    {{ book['Title'] }}
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Book Details -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Book Cover and Quick Actions -->
+            <div class="lg:col-span-1 animate-on-load">
+                <!-- Book Cover -->
+                <div class="professional-card rounded-sm p-6 mb-6 text-center">
+                    <div class="bg-primary-700 border border-primary-600 rounded-sm aspect-[3/4] flex items-center justify-center text-slate-300 text-6xl font-bold mb-6">
+                        {{ book['Title'][0] if book['Title'] else 'B' }}
+                    </div>
+                    
+                    <!-- Status Badge -->
+                    {% if book['Read Status'] %}
+                        <div class="flex justify-center mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-sm text-sm border font-medium
+                                {% if book['Read Status'] == 'Read' %}
+                                    bg-green-900/30 text-green-400 border-green-800
+                                {% elif book['Read Status'] == 'Reading' %}
+                                    bg-yellow-900/30 text-yellow-400 border-yellow-800
+                                {% else %}
+                                    bg-primary-800 text-slate-400 border-primary-600
+                                {% endif %}">
+                                {{ book['Read Status'] }}
+                            </span>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Quick Info -->
+                    {% if book['Condition'] %}
+                        <div class="text-center mb-4">
+                            <span class="text-xs text-slate-500 uppercase tracking-wide block">Condition</span>
+                            <div class="text-sm text-slate-300 mt-1">{{ book['Condition'] }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3">
+                    <a href="{{ url_for('index') }}" 
+                       class="minimal-button w-full inline-flex items-center justify-center px-4 py-3 rounded-sm font-medium text-sm transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Back to Library
+                    </a>
+                    
+                    <button onclick="printDetails()" 
+                            class="minimal-button w-full inline-flex items-center justify-center px-4 py-3 rounded-sm font-medium text-sm transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                        Print Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Book Information -->
+            <div class="lg:col-span-3 animate-on-load space-y-6">
+                <!-- Title and Author -->
+                <div>
+                    <h1 class="text-3xl font-semibold text-slate-100 mb-3 leading-tight">
+                        {{ book['Title'] }}
+                    </h1>
+                    {% if book['Author'] %}
+                        <p class="text-lg text-slate-400 mb-3">
+                            by <span class="text-accent-500 font-medium">{{ book['Author'] }}</span>
+                        </p>
+                    {% endif %}
+                    {% if book['Genre'] %}
+                        <div class="flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-3 py-1 rounded-sm text-sm bg-primary-800 text-slate-300 border border-primary-600">
+                                {{ book['Genre'] }}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Main Contents -->
+                {% if book['Main Contents'] %}
+                    <div class="professional-card rounded-sm p-6">
+                        <h2 class="text-lg font-semibold text-slate-200 mb-3">
+                            Contents
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed">
+                            {{ book['Main Contents'] }}
+                        </p>
+                    </div>
+                {% endif %}
+
+                <!-- Book Details Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Publication Info -->
+                    <div class="professional-card rounded-sm p-6">
+                        <h3 class="text-base font-semibold text-slate-200 mb-4">
+                            Publication Details
+                        </h3>
+                        <div class="space-y-4">
+                            {% if book['Publisher'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Publisher</div>
+                                    <div class="text-sm text-slate-300">{{ book['Publisher'] }}</div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if book['Year of publication'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Publication Year</div>
+                                    <div class="text-sm text-slate-300">{{ book['Year of publication'] }}</div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if book['Country'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Country</div>
+                                    <div class="text-sm text-slate-300">{{ book['Country'] }}</div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if book['ISBN'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">ISBN</div>
+                                    <div class="text-sm text-slate-300 font-mono">{{ book['ISBN'] }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Library Info -->
+                    <div class="professional-card rounded-sm p-6">
+                        <h3 class="text-base font-semibold text-slate-200 mb-4">
+                            Library Information
+                        </h3>
+                        <div class="space-y-4">
+                            {% if book['Book/PDF/Film'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Format</div>
+                                    <div class="text-sm text-slate-300">{{ book['Book/PDF/Film'] }}</div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if book['Location'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Location</div>
+                                    <div class="text-sm text-slate-300">{{ book['Location'] }}</div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if book['Condition'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Condition</div>
+                                    <div class="text-sm text-slate-300">{{ book['Condition'] }}</div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if book['Read Status'] %}
+                                <div>
+                                    <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Read Status</div>
+                                    <div class="text-sm text-slate-300">{{ book['Read Status'] }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function printDetails() {
+        window.print();
+    }
+    
+    // Add print styles
+    const printStyles = document.createElement('style');
+    printStyles.textContent = `
+        @media print {
+            nav, footer, button { display: none !important; }
+            .professional-card { 
+                background: white !important; 
+                border: 1px solid #ccc !important; 
+            }
+            body { 
+                background: white !important; 
+                color: black !important; 
+            }
+            .text-slate-100, .text-slate-200, .text-slate-300 {
+                color: black !important;
+            }
+            .text-slate-400, .text-slate-500 {
+                color: #666 !important;
+            }
+        }
+    `;
+    document.head.appendChild(printStyles);
+</script>
+{% endblock %}

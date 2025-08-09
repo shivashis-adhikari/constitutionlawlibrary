@@ -1,73 +1,350 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prof. Bipin Adhikari Constitutional Law Library</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="https://em-content.zobj.net/source/apple/391/open-book_1f4d6.png" type="image/x-icon">
-    <script>
-        function showDetails(book) {
-            const details = `
-                <p><strong>Title:</strong> ${book['Title']}</p>
-                <p><strong>Book/PDF/Film:</strong> ${book['Book/PDF/Film']}</p>
-                <p><strong>Author:</strong> ${book['Author']}</p>
-                <p><strong>Genre:</strong> ${book['Genre']}</p>
-                <p><strong>Main Contents:</strong> ${book['Main Contents']}</p>
-                <p><strong>Publisher:</strong> ${book['Publisher']}</p>
-                <p><strong>Year of publication:</strong> ${book['Year of publication']}</p>
-                <p><strong>Country:</strong> ${book['Country']}</p>
-                <p><strong>ISBN:</strong> ${book['ISBN']}</p>
-                <p><strong>Condition:</strong> ${book['Condition']}</p>
-                <p><strong>Read Status:</strong> ${book['Read Status']}</p>
-                <p><strong>Location:</strong> ${book['Location']}</p>
-            `;
-            document.getElementById('book-details').innerHTML = details;
-            document.getElementById('details-dialog').style.display = 'block';
-        }
+{% extends "base.html" %}
 
-        function closeDetails() {
-            document.getElementById('details-dialog').style.display = 'none';
-        }
-    </script>
-</head>
-<body>
-    <h1>Prof. Bipin Adhikari Constitutional Law Library</h1>
-    <form method="get" action="/">
-        <input type="text" name="query" placeholder="Search..." value="{{ query }}">
-        <select name="field">
-            <option value="All" {% if field == 'All' %}selected{% endif %}>All</option>
-            <option value="Title" {% if field == 'Title' %}selected{% endif %}>Title</option>
-            <option value="Book/PDF/Film" {% if field == 'Book/PDF/Film' %}selected{% endif %}>Book/PDF/Film</option>
-            <option value="Author" {% if field == 'Author' %}selected{% endif %}>Author</option>
-            <option value="Genre" {% if field == 'Genre' %}selected{% endif %}>Genre</option>
-            <option value="Main Contents" {% if field == 'Main Contents' %}selected{% endif %}>Main Contents</option>
-            <option value="Publisher" {% if field == 'Publisher' %}selected{% endif %}>Publisher</option>
-            <option value="Year of publication" {% if field == 'Year of publication' %}selected{% endif %}>Year of publication</option>
-            <option value="Country" {% if field == 'Country' %}selected{% endif %}>Country</option>
-            <option value="ISBN" {% if field == 'ISBN' %}selected{% endif %}>ISBN</option>
-            <option value="Condition" {% if field == 'Condition' %}selected{% endif %}>Condition</option>
-            <option value="Read Status" {% if field == 'Read Status' %}selected{% endif %}>Read Status</option>
-            <option value="Location" {% if field == 'Location' %}selected{% endif %}>Location</option>
-        </select>
-        <button type="submit">Search</button>
-    </form>
+{% block content %}
+<!-- Header Section -->
+<section class="px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="animate-on-load">
+            <h1 class="text-3xl font-semibold text-white mb-2">
+                Constitutional Law Library
+            </h1>
+            <p class="text-lg text-neutral-400 mb-8 max-w-3xl">
+                A comprehensive collection of constitutional law resources, scholarly works, and legal documents curated by Prof. Bipin Adhikari.
+            </p>
+        </div>
 
-    {% if books|length == 0 %}
-        <p>No books found</p>
-    {% else %}
-        <ul>
-            {% for book in books %}
-                <li>{{ loop.index }}. {{ book['Title'] }}
-                    <button onclick='showDetails({{ book | tojson }})'>View</button>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <!-- Search Section -->
+        <div class="animate-on-load max-w-4xl mb-8">
+            <form method="get" action="/" class="space-y-4">
+                <!-- Search Input -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input 
+                            type="text" 
+                            name="query" 
+                            placeholder="Search books, authors, or content..." 
+                            value="{{ query }}"
+                            class="search-input w-full pl-10 pr-4 py-3 rounded-sm focus:outline-none text-sm"
+                            autocomplete="off"
+                        >
+                    </div>
 
-    <div id="details-dialog" style="display:none;">
-        <div id="book-details"></div>
-        <button onclick="closeDetails()">Close</button>
+                    <div class="flex gap-3">
+                        <select 
+                            name="field" 
+                            class="search-input px-3 py-3 rounded-sm focus:outline-none text-sm min-w-[140px]"
+                        >
+                            <option value="All" {% if field == 'All' %}selected{% endif %}>All Fields</option>
+                            <option value="Title" {% if field == 'Title' %}selected{% endif %}>Title</option>
+                            <option value="Author" {% if field == 'Author' %}selected{% endif %}>Author</option>
+                            <option value="Genre" {% if field == 'Genre' %}selected{% endif %}>Genre</option>
+                            <option value="Publisher" {% if field == 'Publisher' %}selected{% endif %}>Publisher</option>
+                            <option value="Year of publication" {% if field == 'Year of publication' %}selected{% endif %}>Year</option>
+                            <option value="Country" {% if field == 'Country' %}selected{% endif %}>Country</option>
+                        </select>
+                        
+                        <button 
+                            type="submit" 
+                            class="accent-button px-6 py-3 rounded-sm font-medium text-sm hover:opacity-90 transition-opacity"
+                        >
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="animate-on-load flex items-center justify-between mb-6">
+            <div>
+                <p class="text-sm text-neutral-400">
+                    {% if query %}
+                        Found <span class="text-neutral-200 font-medium">{{ books|length }}</span> books matching "{{ query }}"
+                    {% else %}
+                        Showing all <span class="text-neutral-200 font-medium">{{ books|length }}</span> books
+                    {% endif %}
+                </p>
+            </div>
+            {% if query %}
+                <a href="/" class="text-sm text-neutral-400 hover:text-neutral-300 transition-colors">
+                    Clear search
+                </a>
+            {% endif %}
+        </div>
     </div>
-</body>
-</html>
+</section>
+
+<!-- Books Grid -->
+<section class="px-4 sm:px-6 lg:px-8 pb-12">
+    <div class="max-w-7xl mx-auto">
+        {% if books|length == 0 %}
+            <!-- Empty State -->
+            <div class="text-center py-16 animate-on-load">
+                <div class="w-16 h-16 mx-auto mb-4 bg-neutral-800 rounded-sm flex items-center justify-center">
+                    <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-neutral-200 mb-2">No books found</h3>
+                <p class="text-neutral-400 mb-4 max-w-md mx-auto">
+                    Try adjusting your search terms or browse all available books.
+                </p>
+                <a href="/" class="accent-button inline-flex items-center px-4 py-2 rounded-sm text-sm">
+                    View All Books
+                </a>
+            </div>
+        {% else %}
+            <!-- Books Grid -->
+            <div class="book-grid">
+                {% for book in books %}
+                    <div class="professional-card rounded-sm p-6 animate-on-load cursor-pointer hover:transform hover:scale-[1.01] transition-all duration-200 flex flex-col h-full" onclick='showDetails({{ book | tojson }})'>
+                        <!-- Book Header -->
+                        <div class="flex items-start space-x-4 mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-16 bg-neutral-800 rounded-sm flex items-center justify-center border border-neutral-700">
+                                    <span class="text-neutral-300 text-lg font-semibold">{{ loop.index }}</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-base font-semibold text-white leading-tight mb-1 line-clamp-2">
+                                    {{ book['Title'] }}
+                                </h3>
+                                {% if book['Author'] %}
+                                    <p class="text-sm text-neutral-400">
+                                        {{ book['Author'] }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Book Meta -->
+                        <div class="space-y-2 mb-4">
+                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                {% if book['Genre'] %}
+                                    <span class="bg-neutral-800 text-neutral-300 px-2 py-1 rounded-sm border border-neutral-700">
+                                        {{ book['Genre'] }}
+                                    </span>
+                                {% endif %}
+                                {% if book['Year of publication'] %}
+                                    <span class="text-neutral-500 flex items-center">{{ book['Year of publication'] }}</span>
+                                {% endif %}
+                                {% if book['Country'] %}
+                                    <span class="text-neutral-500 flex items-center">{{ book['Country'] }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Book Description - Flexible content area -->
+                        <div class="flex-1 mb-4">
+                            {% if book['Main Contents'] %}
+                                <p class="text-sm text-neutral-400 line-clamp-3 leading-relaxed">
+                                    {{ book['Main Contents'] }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Book Footer - Always at bottom -->
+                        <div class="pt-3 border-t border-neutral-700 mt-auto">
+                            <div class="flex items-center justify-between">
+                                <!-- Read Status - Left side with text truncation -->
+                                {% if book['Read Status'] %}
+                                    <div class="flex-shrink-0">
+                                        <span class="text-xs px-2 py-1 rounded-sm border cursor-default inline-block
+                                            {% if book['Read Status'] == 'Read' %}
+                                                bg-green-900/30 text-green-400 border-green-800
+                                            {% elif book['Read Status'] == 'Reading' %}
+                                                bg-yellow-900/30 text-yellow-400 border-yellow-800
+                                            {% else %}
+                                                bg-neutral-800 text-neutral-400 border-neutral-700
+                                            {% endif %}"
+                                            onclick="event.stopPropagation()"
+                                            title="{{ book['Read Status'] }}">
+                                            {% if book['Read Status']|length > 20 %}
+                                                {{ book['Read Status'][:20] }}...
+                                            {% else %}
+                                                {{ book['Read Status'] }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                {% else %}
+                                    <div></div>
+                                {% endif %}
+                                
+                                <!-- Action Buttons - Right side -->
+                                <div class="flex space-x-3 text-xs flex-shrink-0">
+                                    <a href="{{ url_for('book_detail', book_id=loop.index) }}" 
+                                       class="text-neutral-400 hover:text-neutral-300 transition-colors"
+                                       onclick="event.stopPropagation()">
+                                        View Details
+                                    </a>
+                                    <button class="text-neutral-400 hover:text-neutral-300 transition-colors">
+                                        Quick View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Book Details Modal -->
+<div id="details-dialog" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-200">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div id="modal-content" class="bg-neutral-900 border border-neutral-700 rounded-sm shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden transform scale-95 transition-transform duration-200">
+            <!-- Modal Header -->
+            <div class="bg-neutral-800 px-6 py-4 border-b border-neutral-700">
+                <div class="flex items-center justify-between">
+                    <h2 id="modal-title" class="text-lg font-semibold text-white">Book Details</h2>
+                    <button onclick="closeDetails()" class="p-1 hover:bg-neutral-700 rounded-sm transition-colors">
+                        <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Modal Body -->
+            <div id="book-details" class="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function showDetails(book) {
+        const modal = document.getElementById('details-dialog');
+        const modalContent = document.getElementById('modal-content');
+        const title = document.getElementById('modal-title');
+        const details = document.getElementById('book-details');
+        
+        title.textContent = book['Title'] || 'Book Details';
+        
+        const detailsHTML = `
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Book Cover -->
+                <div class="lg:col-span-1">
+                    <div class="bg-neutral-800 border border-neutral-700 rounded-sm aspect-[3/4] flex items-center justify-center text-neutral-300 text-4xl font-bold">
+                        ${book['Title'] ? book['Title'].charAt(0).toUpperCase() : 'B'}
+                    </div>
+                    ${book['Read Status'] ? `
+                        <div class="mt-4 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-sm text-sm border
+                                ${book['Read Status'] === 'Read' 
+                                    ? 'bg-green-900/30 text-green-400 border-green-800' 
+                                    : book['Read Status'] === 'Reading' 
+                                        ? 'bg-yellow-900/30 text-yellow-400 border-yellow-800'
+                                        : 'bg-neutral-800 text-neutral-400 border-neutral-700'
+                                }">
+                                ${book['Read Status']}
+                            </span>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <!-- Book Information -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div>
+                        <h1 class="text-xl font-semibold text-white mb-2">${book['Title'] || 'N/A'}</h1>
+                        ${book['Author'] ? `<p class="text-neutral-400">by ${book['Author']}</p>` : ''}
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        ${createDetailItem('Format', book['Book/PDF/Film'])}
+                        ${createDetailItem('Genre', book['Genre'])}
+                        ${createDetailItem('Publisher', book['Publisher'])}
+                        ${createDetailItem('Year', book['Year of publication'])}
+                        ${createDetailItem('Country', book['Country'])}
+                        ${createDetailItem('ISBN', book['ISBN'])}
+                        ${createDetailItem('Condition', book['Condition'])}
+                        ${createDetailItem('Location', book['Location'])}
+                    </div>
+                    
+                    ${book['Main Contents'] ? `
+                        <div class="bg-neutral-800/50 border border-neutral-700 rounded-sm p-4">
+                            <h3 class="font-medium text-neutral-200 mb-2">Contents</h3>
+                            <p class="text-neutral-400 text-sm leading-relaxed">${book['Main Contents']}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        
+        details.innerHTML = detailsHTML;
+        
+        // Show modal
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+    }
+    
+    function createDetailItem(label, value) {
+        if (!value || value === 'nan' || value === 'NaN') return '';
+        return `
+            <div class="bg-neutral-800/50 border border-neutral-700 rounded-sm p-3">
+                <div class="text-xs text-neutral-500 uppercase tracking-wide mb-1">${label}</div>
+                <div class="text-neutral-300">${value}</div>
+            </div>
+        `;
+    }
+    
+    function closeDetails() {
+        const modal = document.getElementById('details-dialog');
+        const modalContent = document.getElementById('modal-content');
+        
+        modal.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 200);
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('details-dialog').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDetails();
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDetails();
+        }
+    });
+    
+    // Add utility classes for line-clamp
+    const style = document.createElement('style');
+    style.textContent = `
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}
